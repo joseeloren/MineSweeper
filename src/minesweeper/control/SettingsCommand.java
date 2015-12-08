@@ -1,17 +1,18 @@
 package minesweeper.control;
 
-import minesweeper.view.SettingsDisplay;
+import minesweeper.SettingsPanel;
 
 public class SettingsCommand implements Command{
-    private SettingsDisplay settingsDisplay;
 
-    public SettingsCommand(SettingsDisplay settingsDisplay) {
-        this.settingsDisplay = settingsDisplay;
+    private final SettingsPanel settingsPanel;
+
+    public SettingsCommand(SettingsPanel settingsPanel) {
+        this.settingsPanel = settingsPanel;
     }
-
+    
     @Override
     public void execute() {
-        settingsDisplay.display();
+        settingsPanel.display();
     }
     
 }

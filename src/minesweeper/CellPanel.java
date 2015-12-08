@@ -10,7 +10,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import minesweeper.control.CellClickedCommand;
 import minesweeper.control.Command;
 import minesweeper.control.NewGameCommand;
 import minesweeper.model.Cell;
@@ -20,7 +19,6 @@ import minesweeper.view.CellDisplay;
 
 public class CellPanel extends JPanel implements CellDialog, CellDisplay {
     private Map<String, Command> commands = new HashMap<>();
-    private CellClickedCommand cellClickedCommand;
     private JLabel label;
     private boolean hidden = true;
     private boolean flagged = false;
@@ -41,11 +39,10 @@ public class CellPanel extends JPanel implements CellDialog, CellDisplay {
         add(label, BorderLayout.CENTER);
         label.setHorizontalAlignment(JTextField.CENTER);
         label.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        label.addMouseListener(doCommand("Cell Clicked"));
+        label.addMouseListener(doCommand());
     }
     
     private void createCommands() {
-        this.commands.put("Cell Clicked", new CellClickedCommand(this));
         this.commands.put("New Game", new NewGameCommand(parent));
     }
 
@@ -54,7 +51,7 @@ public class CellPanel extends JPanel implements CellDialog, CellDisplay {
     }
     
 
-    private MouseListener doCommand(final String command) {
+    private MouseListener doCommand() {
         return new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {

@@ -15,6 +15,8 @@ import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import minesweeper.control.AcceptNewSettingsCommand;
 import minesweeper.control.Command;
+import minesweeper.control.NewGameCommand;
+import minesweeper.view.BoardDisplay;
 import minesweeper.view.SettingsDialog;
 import minesweeper.view.SettingsDisplay;
 
