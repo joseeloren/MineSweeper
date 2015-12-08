@@ -2,7 +2,7 @@ package minesweeper.control;
 
 import minesweeper.view.CellDisplay;
 
-public class PutFlagCommand {
+public class PutFlagCommand implements Command{
     private final CellDisplay cellDisplay;
 
     public PutFlagCommand(CellDisplay cellDisplay) {

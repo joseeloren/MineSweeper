@@ -1,6 +1,5 @@
 package minesweeper.control;
 
-import minesweeper.view.CellDialog;
 import minesweeper.view.ObservableCell;
 
 public class CellClickedCommand implements Command{
@@ -9,7 +8,6 @@ public class CellClickedCommand implements Command{
     public CellClickedCommand(ObservableCell observableCell) {
         this.observableCell = observableCell;
     }
-
      
     @Override
     public void execute() {

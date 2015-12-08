@@ -10,13 +10,13 @@ import minesweeper.model.Point;
 import minesweeper.view.BoardBuilder;
 import minesweeper.view.ObservableCell;
 
+
+
 public class BoardPanel extends JPanel {
-    private JFrame parent;
     private int rows = 15;
     private int cols = 15; 
 
     public BoardPanel(JFrame parent) {
-        this.parent = parent;
         this.setLayout(new GridLayout(15, 15));
         addCellsToPanel();
     }
@@ -25,13 +25,8 @@ public class BoardPanel extends JPanel {
         Cell[][] cells = BoardBuilder.generateBoard(new Point(rows, cols), 30);
         for (int i = 0; i < cells.length; i++) 
             for (int j = 0; j < cells[i].length; j++) 
-                this.add(new CellPanel(cells[i][j],this));
+                this.add(new CellPanel(cells[i][j]));
     }
-
-    public JFrame getParent() {
-        return parent;
-    }
-
     
     public void refreshAllCells(ObservableCell cell){
         refreshAllCells(cell.get().getPosition());

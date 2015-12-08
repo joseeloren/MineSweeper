@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.BorderFactory;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -21,11 +20,9 @@ public class CellPanel extends JPanel implements CellDialog, Observer {
     private ObservableCell observableCell;
     private CellClickedCommand cellClickedCommand;
     private JLabel label;
-    private BoardPanel parent;
     private boolean hidden = true;
     
-    public CellPanel(Cell cell, BoardPanel parent) {
-        this.parent = parent;
+    public CellPanel(Cell cell) {
         this.observableCell = new ObservableCell(cell);
         deployUI();
         createCommands();
@@ -42,7 +39,7 @@ public class CellPanel extends JPanel implements CellDialog, Observer {
     }
     
     private void createCommands() {
-        this.cellClickedCommand = new CellClickedCommand(observableCell);
+        //this.cellClickedCommand = new CellClickedCommand(observableCell);
     }
     
     public void showCell() {
@@ -61,12 +58,12 @@ public class CellPanel extends JPanel implements CellDialog, Observer {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (isHidden()) {
-                    parent.refreshAllCells(observableCell);
+                    //parent.refreshAllCells(observableCell);
                     if (observableCell.get() instanceof MineCell) {
                         int response = JOptionPane.showConfirmDialog(null, "!Perdiste!. ¿Quieres volver a jugar?", "Perdiste", JOptionPane.YES_NO_OPTION);
                         if (response == JOptionPane.YES_OPTION) {
                             new Application().setVisible(true);
-                            parent.getParent().dispose();
+                           // parent.getParent().dispose();
                         }
                         else if (response == JOptionPane.NO_OPTION)
                             System.exit(0);
@@ -104,21 +101,7 @@ public class CellPanel extends JPanel implements CellDialog, Observer {
         
     }
 
-    public ObservableCell getObservableCell() {
-        return observableCell;
-    }
-
-    public CellClickedCommand getCellClickedCommand() {
-        return cellClickedCommand;
-    }
-
     public JLabel getLabel() {
         return label;
     }
-
-    public BoardPanel getParent() {
-        return parent;
-    }
-
-
 }
