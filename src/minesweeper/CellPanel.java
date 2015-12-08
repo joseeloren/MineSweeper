@@ -4,48 +4,50 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import minesweeper.control.CellClickedCommand;
+import minesweeper.control.Command;
+import minesweeper.control.NewGameCommand;
 import minesweeper.model.Cell;
 import minesweeper.model.MineCell;
 import minesweeper.view.CellDialog;
-import minesweeper.view.ObservableCell;
-import minesweeper.view.Observer;
+import minesweeper.view.CellDisplay;
 
-public class CellPanel extends JPanel implements CellDialog, Observer {
-    private ObservableCell observableCell;
+public class CellPanel extends JPanel implements CellDialog, CellDisplay {
+    private Map<String, Command> commands = new HashMap<>();
     private CellClickedCommand cellClickedCommand;
     private JLabel label;
     private boolean hidden = true;
+    private boolean flagged = false;
+    private BoardPanel parent;
+    private Cell cell;
     
-    public CellPanel(Cell cell) {
-        this.observableCell = new ObservableCell(cell);
+    public CellPanel(Cell cell, BoardPanel boardPanel) {
+        this.cell = cell;
+        this.parent = boardPanel;
         deployUI();
         createCommands();
     }
     
     private void deployUI() {
-        this.setBackground(Color.blue);
+        this.setBackground(Color.PINK);
         this.setLayout(new BorderLayout());
         this.label = new JLabel();
         add(label, BorderLayout.CENTER);
         label.setHorizontalAlignment(JTextField.CENTER);
         label.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        label.addMouseListener(doCommand());
+        label.addMouseListener(doCommand("Cell Clicked"));
     }
     
     private void createCommands() {
-        //this.cellClickedCommand = new CellClickedCommand(observableCell);
-    }
-    
-    public void showCell() {
-        label.setText(observableCell.get().toString());
-        setBackground(Color.white);
-        hidden = false;
+        this.commands.put("Cell Clicked", new CellClickedCommand(this));
+        this.commands.put("New Game", new NewGameCommand(parent));
     }
 
     public boolean isHidden() {
@@ -53,23 +55,21 @@ public class CellPanel extends JPanel implements CellDialog, Observer {
     }
     
 
-    private MouseListener doCommand() {
+    private MouseListener doCommand(final String command) {
         return new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (isHidden()) {
-                    //parent.refreshAllCells(observableCell);
-                    if (observableCell.get() instanceof MineCell) {
-                        int response = JOptionPane.showConfirmDialog(null, "!Perdiste!. ¿Quieres volver a jugar?", "Perdiste", JOptionPane.YES_NO_OPTION);
-                        if (response == JOptionPane.YES_OPTION) {
-                            new Application().setVisible(true);
-                           // parent.getParent().dispose();
-                        }
-                        else if (response == JOptionPane.NO_OPTION)
-                            System.exit(0);
+                if (e.getButton() == MouseEvent.BUTTON1 && isHidden()) {
+                    parent.refreshAllCells(CellPanel.this);
+                    if (cell instanceof MineCell) {
+                        parent.showAll();
+                        RetryDialog.retry(parent, "Lose", commands.get("New Game"));
                     } else {
-                        cellClickedCommand.execute();
+                        if (parent.getUnclickedCellsCounter() == parent.getMines())
+                            RetryDialog.retry(parent, "Win", commands.get("New Game"));
                     }
+                } else if (e.getButton() == MouseEvent.BUTTON3 && isHidden()) {
+                    putFlag();
                 }
             }
 
@@ -93,15 +93,17 @@ public class CellPanel extends JPanel implements CellDialog, Observer {
 
     @Override
     public Cell get() {
-        return this.observableCell.get();
+        return this.cell;
     }
 
     @Override
-    public void changed() {
-        
+    public void display() {
+        label.setText(this.cell.toString());
+        setBackground(Color.white);
+        hidden = false;
     }
-
-    public JLabel getLabel() {
-        return label;
+    
+    public void putFlag() {
+        label.setText((!label.getText().equals("F")) ? "F" : "");
     }
 }

@@ -2,13 +2,13 @@ package minesweeper.control;
 
 import minesweeper.view.SettingsDisplay;
 
-public class SettingsCommand implements Command{
+public class AcceptNewSettingsCommand implements Command{
     private SettingsDisplay settingsDisplay;
 
-    public SettingsCommand(SettingsDisplay settingsDisplay) {
+    public AcceptNewSettingsCommand(SettingsDisplay settingsDisplay) {
         this.settingsDisplay = settingsDisplay;
     }
-
+    
     @Override
     public void execute() {
         settingsDisplay.display();

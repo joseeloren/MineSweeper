@@ -1,7 +1,7 @@
 package minesweeper.model;
 
 public class MineCell implements Cell{
-    private Point position;
+    private final Point position;
 
     public MineCell(Point position) {
         this.position = position;

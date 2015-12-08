@@ -7,7 +7,6 @@ public class EmptyCell implements Cell{
         this.position = position;
     }
     
-    
     @Override
     public String toString() {
         return " ";

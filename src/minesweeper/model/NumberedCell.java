@@ -1,6 +1,6 @@
 package minesweeper.model;
 
-public class NumberedCell implements ClickedCell{
+public class NumberedCell implements Cell{
     private final Point position;
     private final int numberOfMines;
 

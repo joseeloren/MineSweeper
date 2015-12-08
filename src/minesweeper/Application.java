@@ -1,49 +1,52 @@
 package minesweeper;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
-import javax.swing.*;
-import minesweeper.control.*;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.HashMap;
+import java.util.Map;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JPanel;
+import minesweeper.control.Command;
+import minesweeper.control.NewGameCommand;
+import minesweeper.control.SettingsCommand;
 
 public class Application extends JFrame {
     private Map<String,Command> commands = new HashMap<>();
-    private Map<String,Component> components = new HashMap<>();
-    private Command newGameCommand;
     private SettingsPanel settingsPanel;
     private BoardPanel boardPanel;
     
     public static void main(String[] args) {
-        //new Application().setVisible(true);
-        new SettingsPanel().setVisible(true);
-        
-        //new JFrame().setVisible(true);
+        new Application().setVisible(true);
     }
     
-    public Application() throws HeadlessException {
+    public Application() {
         this.deployUI();
         this.createCommand();
     }
     
     private void createCommand() {
-        this.commands.put("New Game", new NewGameCommand());
+        this.commands.put("New Game", new NewGameCommand(boardPanel));
         this.commands.put("Settings", new SettingsCommand(settingsPanel));
     }
 
     private void deployUI() {
-        this.setTitle("MineSweeper");
+        this.settingsPanel = new SettingsPanel(this); 
+        this.getContentPane().add(board());
+        this.setTitle("Minesweeper");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);
         this.pack();
         this.setSize(new Dimension(500, 500));
-        //this.getContentPane().add(board());
         this.setJMenuBar(menuBar());
         this.setLocationRelativeTo(null);
-        this.settingsPanel = new SettingsPanel(this);
     }
 
     private JPanel board() {
-        this.boardPanel = new BoardPanel(this);
+        this.boardPanel = new BoardPanel(this, this.settingsPanel);
         return boardPanel;
     }
 
@@ -66,7 +69,7 @@ public class Application extends JFrame {
         return menuItem;
     }
 
-    private MouseListener doCommand(final String command) {
+    public MouseListener doCommand(final String command) {
         return new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {

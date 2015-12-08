@@ -18,6 +18,7 @@ public class CellFactory {
             case "Number":
                 return new NumberedCell(position, number);
             case "Empty":
+                return new EmptyCell(position);
             default:
                 return null;
         }
