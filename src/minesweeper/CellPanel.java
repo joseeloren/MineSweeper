@@ -10,41 +10,56 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import minesweeper.control.CellClickedCommand;
 import minesweeper.model.Cell;
 import minesweeper.model.MineCell;
 import minesweeper.view.CellDialog;
-import minesweeper.view.ObservableCellDisplay;
+import minesweeper.view.ObservableCell;
 import minesweeper.view.Observer;
 
-public class CellPanel extends JPanel implements CellDialog, Observer{
-    private ObservableCellDisplay observableCell;
+public class CellPanel extends JPanel implements CellDialog, Observer {
+    private ObservableCell observableCell;
+    private CellClickedCommand cellClickedCommand;
     private JLabel label;
-    private Frame father;
+    private BoardPanel parent;
     
-    public CellPanel(Cell cell, Frame father) {
-        this.father = father;
-        this.observableCell = new ObservableCellDisplay(cell);
-        this.setLayout(new BorderLayout());
+    public CellPanel(Cell cell, BoardPanel parent) {
+        this.parent = parent;
+        this.observableCell = new ObservableCell(cell);
+        deployUI();
+        createCommands();
+    }
+    
+    private void deployUI() {
         this.setBackground(Color.blue);
+        this.setLayout(new BorderLayout());
         this.label = new JLabel();
         add(label, BorderLayout.CENTER);
         label.setHorizontalAlignment(JTextField.CENTER);
         label.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         label.addMouseListener(doCommand());
     }
+    
+    private void createCommands() {
+        this.cellClickedCommand = new CellClickedCommand(observableCell);
+    }
 
     private MouseListener doCommand() {
         return new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                label.setText(observableCell.getCell().toString());
+                label.setText(observableCell.get().toString());
                 setBackground(Color.white);
-                if (observableCell.getCell() instanceof MineCell) {
-                    int response = JOptionPane.showConfirmDialog(father, "!Perdiste!. ¿Quieres volver a jugar?", "Perdiste", JOptionPane.YES_NO_OPTION);
-                    if (response == JOptionPane.YES_OPTION)
-                        father.newGame();
+                if (observableCell.get() instanceof MineCell) {
+                    int response = JOptionPane.showConfirmDialog(null, "!Perdiste!. ¿Quieres volver a jugar?", "Perdiste", JOptionPane.YES_NO_OPTION);
+                    if (response == JOptionPane.YES_OPTION) {
+                        new Application().setVisible(true);
+                        parent.getParent().dispose();
+                    }
                     else if (response == JOptionPane.NO_OPTION)
                         System.exit(0);
+                } else {
+                    cellClickedCommand.execute();
                 }
             }
 
@@ -75,4 +90,6 @@ public class CellPanel extends JPanel implements CellDialog, Observer{
     public void changed() {
         
     }
+
+
 }

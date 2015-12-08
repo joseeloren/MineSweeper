@@ -5,7 +5,7 @@ import javax.swing.*;
 import minesweeper.control.Command;
 import minesweeper.control.NewGameCommand;
 
-public class Application extends Frame {
+public class Application extends JFrame {
     private Command newGameCommand;
     private BoardPanel boardPanel;
     
@@ -19,7 +19,7 @@ public class Application extends Frame {
     }
     
     private void createCommand() {
-        this.newGameCommand = new NewGameCommand(this.boardPanel, this);
+        this.newGameCommand = new NewGameCommand(this.boardPanel);
     }
 
     private void deployUI() {
@@ -35,17 +35,5 @@ public class Application extends Frame {
     private JPanel board() {
         this.boardPanel = new BoardPanel(this);
         return boardPanel;
-    }
-
-    @Override
-    public void newGame() {
-        getContentPane().remove(boardPanel);
-        newGameCommand.execute();
-        this.setVisible(false);
-        getContentPane().add(boardPanel);
-        this.repaint();
-        getContentPane().invalidate();
-        getContentPane().validate();
-        this.setVisible(true);
     }
 }

@@ -1,13 +1,11 @@
 package minesweeper.model;
 
 public class NumberedCell implements Cell{
+    private final Point position;
     private final int numberOfMines;
 
-    public NumberedCell() {
-        this(1);
-    }
-    
-    public NumberedCell(int numberOfMines) {
+    public NumberedCell(Point position, int numberOfMines) {
+        this.position = position;
         this.numberOfMines = numberOfMines;
     }
 
@@ -18,5 +16,10 @@ public class NumberedCell implements Cell{
     @Override
     public String toString() {
         return Integer.toString(numberOfMines);
+    }
+
+    @Override
+    public Point getPosition() {
+        return this.position;
     }
 }
