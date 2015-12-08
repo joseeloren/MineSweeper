@@ -8,31 +8,24 @@ import minesweeper.model.EmptyCell;
 import minesweeper.model.MineCell;
 import minesweeper.model.Point;
 import minesweeper.view.BoardBuilder;
-import minesweeper.view.BoardDisplay;
 import minesweeper.view.ObservableCell;
 
-public class BoardPanel extends JPanel implements BoardDisplay{
-    private Cell[][] board;
+public class BoardPanel extends JPanel {
     private JFrame parent;
-    private CellPanel[][] cellPanels;
+    private int rows = 15;
+    private int cols = 15; 
 
     public BoardPanel(JFrame parent) {
         this.parent = parent;
-        this.board = BoardBuilder.generateBoard(new Point(15, 15), 30);
         this.setLayout(new GridLayout(15, 15));
-        this.cellPanels = new CellPanel[15][15];
         addCellsToPanel();
     }
 
     private void addCellsToPanel() {
-        Cell[][] cells = board.getCells();
-        for (int i = 0; i < cellPanels.length; i++) {
-            for (int j = 0; j < cellPanels[i].length; j++) {
-                CellPanel cellPanel = new CellPanel(cells[i][j],this);
-                this.add(cellPanel);
-                cellPanels[i][j] = cellPanel;
-            }
-        }
+        Cell[][] cells = BoardBuilder.generateBoard(new Point(rows, cols), 30);
+        for (int i = 0; i < cells.length; i++) 
+            for (int j = 0; j < cells[i].length; j++) 
+                this.add(new CellPanel(cells[i][j],this));
     }
 
     public JFrame getParent() {
@@ -41,22 +34,21 @@ public class BoardPanel extends JPanel implements BoardDisplay{
 
     
     public void refreshAllCells(ObservableCell cell){
-        Point p = cell.get().getPosition();
-        int row = p.getRow();
-        int col = p.getCol();
-        Cell[][] cells  = board.getCells();
-        refreshAllCells(cellPanels[row][col], cellPanels);
+        refreshAllCells(cell.get().getPosition());
     }
     
-    public void refreshAllCells(CellPanel cellPanel, CellPanel[][] cells) {
+    private void refreshAllCells(Point point) {
+        CellPanel cellPanel = (CellPanel) this.getComponent(point.getRow() * 15 + point.getCol());
         Point size = cellPanel.get().getPosition();
         if (cellPanel.isHidden()) {
             cellPanel.showCell();
             if (cellPanel.get() instanceof EmptyCell) {
-                for (int i = Math.max(0,size.getRow()-1) ;i<Math.min(size.getRow()+2, cells.length);i++) 
-                    for (int j=Math.max(0,size.getCol()-1);j<Math.min(size.getCol()+2,cells[i].length);j++) 
-                        if (!(cells[i][j].get() instanceof MineCell)) 
-                            refreshAllCells(cells[i][j], cells);
+                for (int i = Math.max(0,point.getRow()-1) ;i<Math.min(point.getRow()+2, rows);i++) 
+                    for (int j=Math.max(0,point.getCol()-1);j<Math.min(point.getCol()+2,cols);j++) { 
+                        CellPanel cp = (CellPanel) this.getComponent(i * 15 + j);
+                        if (!(cp.get() instanceof MineCell)) 
+                            refreshAllCells(new Point(i,j));
+                    }
             }
         }
         

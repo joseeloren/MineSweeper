@@ -1,11 +1,14 @@
 package minesweeper;
 
 import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.*;
 import minesweeper.control.Command;
-import minesweeper.control.NewGameCommand;
 
 public class Application extends JFrame {
+    private Map<String,Command> commands = new HashMap<>();
+    private Map<String,Component> components = new HashMap<>();
     private Command newGameCommand;
     private BoardPanel boardPanel;
     
@@ -19,7 +22,7 @@ public class Application extends JFrame {
     }
     
     private void createCommand() {
-        this.newGameCommand = new NewGameCommand(this.boardPanel);
+        //this.commands.put("New Game", new NewGameCommand());
     }
 
     private void deployUI() {
